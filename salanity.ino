@@ -7,7 +7,7 @@ const int ledRed = 9;
 const int buttonPin = A12;
 int buttonState;
 double adc = 0, previousState = 0;
-double mean, resistMeasured, conductVal, salinity;
+double mean, salinity;
 int turnOn = 1;
 
 
@@ -50,27 +50,8 @@ void loop() {
     Serial.print("mean: ");
     Serial.print(mean);
     Serial.println();
-   // -----------------
-    //get Resistance
-   // -----------------
-    resistMeasured = getResistance(mean);
-  Serial.print("Resist Measured: ");
-  Serial.print(resistMeasured);
-  Serial.println();
- // -----------------------
-    //Calculate Conductivity
-  //  ---------------------
-    conductVal = calConduct(resistMeasured);
-  Serial.print("conductVal Measured: ");
-  Serial.print(conductVal);
-  Serial.println();
-  //------------------------
-      //translate Salinity
- // -----------------------
-  salinity = translateSalinity(conductVal);
-  Serial.print("Salinity Measured: ");
-  Serial.print(salinity);
-  Serial.println();
+   // -----------------Salinity---------
+    display(translateSalinity(mean));
     turnOn = 0;
   }
   else{turnOn = 1;
@@ -78,20 +59,16 @@ void loop() {
        digitalWrite(ledGreen, LOW);}  
   }
   previousState = buttonState;
+  adc = 0;
 }
-double getResistance (double adc){
-  double slope = (475.)/(1023.);
-  Serial.println(slope);
-  return (slope*adc) + 25.;
+
+void display(double percent){
+   Serial.print("Salinity: ");  
+   Serial.print((translateSalinity(mean)));
+   Serial.println();  
   }
-
-double calConduct(double resist){
-    double d = 0.8;
-    double area = 9.;
-    return  d/(area * resist) * 10; 
- }  
-
-double translateSalinity(double conductivity){
-  return 0.4665 * pow(conductivity,1.0878);  
+double translateSalinity(double adc){
+  //Give back the percent of salinity
+  return abs(26.44/(adc-326.61));
   }
   

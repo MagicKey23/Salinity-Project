@@ -6,8 +6,6 @@ const int ledGreen = 8;
 const int ledRed = 9;
 const int buttonPin = A12;
 int buttonState;
-const int maxVal= 660;
-const int minVal= 300;
 double adc = 0, previousState = 0;
 double mean, resistMeasured, conductVal, salinity;
 int turnOn = 1;
